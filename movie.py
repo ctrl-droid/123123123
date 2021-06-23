@@ -132,7 +132,7 @@ class movieService:
         if vo==None:
             print('등록되지 않은 영화제목입니다.')
         else:
-            code =
+
             new_date = input('새로운 상영시간:')
             self.dao.update(code, new_date)
             print('영화 정보가 수정되었습니다.')
