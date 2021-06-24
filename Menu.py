@@ -1,10 +1,14 @@
 import movie_reserve.memModel as mem
-import movie_reserve.movie as movie
+import movie_reserve.movieModel as movie
+import movie_reserve.theaterModel as theater
 
 class Menu:
     def __init__(self):
         self.memService = mem.memService()
-        self.movieService = movie.movieService
+        self.adminmemService = mem.adminmemService()
+        self.movieService = movie.movieService()
+        self.theaterService = theater.theaterService()
+
 
     # 4.내정보 메뉴
     def meminfoMenu(self):
@@ -13,11 +17,11 @@ class Menu:
             if m == '1':
                 pass
             elif m == '2':
-                pass
+                self.memService.printMyInfo()
             elif m == '3':
-                pass
+                self.memService.editMyInfo()
             elif m == '4':
-                pass
+                self.memService.delMyInfo()
             elif m == '5':
                 break
 
@@ -42,13 +46,13 @@ class Menu:
         while True:
             m = input('1.전체회원목록 2.회원조회 3.회원정보수정 4.회원삭제 5.메뉴나감')
             if m == '1':
-                self.memService.printmemAll()
+                self.adminmemService.printmemAll()
             elif m == '2':
-                print('회원ID를 입력 받아서 특정 회원을 조회 할 수 있도록 구현')
+                self.adminmemService.memsearch()
             elif m == '3':
-                print('회원ID를 입력 받아서 특정 회원을 수정 할 수 있도록 구현')
+                self.adminmemService.memupdate()
             elif m == '4':
-                print('회원ID를 입력 받아서 특정 회원을 삭제 할 수 있도록 구현')
+                self.adminmemService.memdelete()
             elif m == '5':
                 break
 
@@ -57,15 +61,15 @@ class Menu:
         while True:
             m = input('1.영화등록 2.영화전체조회 3.영화검색 4.영화수정 5.영화삭제 6.메뉴나감')
             if m == '1':
-                self.movieService.addMovie() #print('영화를 입력 받아서 DB에 등록 할수 있도록 구현')
+                self.movieService.addMovie()
             elif m == '2':
-                self.movieService.getAll()  #('영화목록을 전체 조회가능하도록 구현')
+                self.movieService.getAll()
             elif m == '3':
-                self.movieService.getMovie() #print('영화이름(pk X)을 입력 받아서 영화 정보를 출력 하도록 구현')
+                self.movieService.getMovie()
             elif m == '4':
-                self.movieService.editMovie() #print('영화이름을 입력받아서 영화를 수정하도록 구현 영화코드로 where movie.code')
+                self.movieService.editMovie()
             elif m == '5':
-                self.movieService.delMovie()  #print('영화이름을 입력받아서 영화를 삭제하도록 구현 영화코드로 where movie.code')
+                self.movieService.delMovie()
             elif m == '6':
                 break
 
@@ -74,15 +78,15 @@ class Menu:
         while True:
             m = input('1.상영관등록 2.상영관전체조회 3.상영관검색 4.상영관수정 5.상영관삭제 6.메뉴나감')
             if m == '1':
-                print('상영관정보를 입력 받아서 DB에 등록 할수 있도록 구현(영화 CODE를 모르기 때문에 입력 받을시 영화정보를 가져와서 코드를 선택할수 있도록 구현)')
+                self.theaterService.addTheater()
             elif m == '2':
-                print('상영관정보목록을 전체 조회가능하도록 구현')
+                self.theaterService.theaterAll()
             elif m == '3':
-                print('상영관이름(pk X)을 입력 받아서 상영관 정보를 출력 하도록 구현')
+                self.theaterService.searchTheather()
             elif m == '4':
-                print('상영관이름을 입력받아서 상영관정보를 수정하도록 구현 상영관코드로 where .code')
+                self.theaterService.editTheater()
             elif m == '5':
-                print('상영관이름을 입력받아서 상영관정보를 삭제하도록 구현 상영관코드로 where .code')
+                self.theaterService.delTheater()
             elif m == '6':
                 break
 
