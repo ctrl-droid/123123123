@@ -1,5 +1,6 @@
 import pymysql
 import movie_reserve.movieModel as mom
+import movie_reserve.seatModel as sem
 
 class theaterVo:
     def __init__(self, code=0, name=None, date=None, movie_code=0):
@@ -7,15 +8,21 @@ class theaterVo:
         self.name = name
         self.date = date
         self.movie_code = movie_code
+
     def __str__(self):
-        return 'code:' + str(self.code) + ' / 상영관명:' + self.name + ' / 상영날짜:' + self.date  + ' / 영화코드:' + str(self.movie_code)
+        return 'code:' + str(self.code) + ' / 상영관명:' + self.name + ' / 상영날짜:' + self.date + ' / 영화코드:' + str(
+            self.movie_code)
+
 class theaterDao:
     def __init__(self):
         self.conn = None
+
     def connect(self):
-        self.conn = pymysql.connect(host='localhost', user='root', password='1234', db='movie_reserve', charset='utf8')
+        self.conn = pymysql.connect(host='localhost', user='root', password='1234', db='movie_reserve',charset='utf8')
+
     def disconnet(self):
         self.conn.close()
+
     def insert(self, vo):
         self.connect()
         cur = self.conn.cursor()
@@ -24,6 +31,7 @@ class theaterDao:
         cur.execute(sql, vals)
         self.conn.commit()
         self.disconnet()
+
     def select(self, name):
         theaters = []
         self.connect()
@@ -35,7 +43,8 @@ class theaterDao:
             theaters.append(theaterVo(row[0], row[1], row[2], row[3]))
         self.disconnet()
         return theaters
-    def select_in_movies(self, movie_code):
+
+    def select_in_movie(self, movie_code):
         theaters = []
         self.connect()
         cur = self.conn.cursor()
@@ -46,6 +55,17 @@ class theaterDao:
             theaters.append(theaterVo(row[0], row[1], row[2], row[3]))
         self.disconnet()
         return theaters
+
+    def select_lastCode(self):
+        self.connect()
+        cur = self.conn.cursor()
+        sql = "SELECT code FROM theater ORDER BY code DESC LIMIT 1"
+        cur.execute(sql)
+        row = cur.fetchone()
+        self.disconnet()
+        if row != None:
+            return row[0]
+
     def selectAll(self):
         theaters = []
         self.connect()
@@ -56,6 +76,7 @@ class theaterDao:
             theaters.append(theaterVo(row[0], row[1], row[2], row[3]))
         self.disconnet()
         return theaters
+
     def update(self, code, new_date, new_movie_code):
         self.connect()
         cur = self.conn.cursor()
@@ -64,6 +85,7 @@ class theaterDao:
         cur.execute(sql, vals)
         self.conn.commit()
         self.disconnet()
+
     def delete(self, code):
         self.connect()
         cur = self.conn.cursor()
@@ -72,11 +94,15 @@ class theaterDao:
         cur.execute(sql, vals)
         self.conn.commit()
         self.disconnet()
+
 class theaterService:
     login_id = None
+
     def __init__(self):
         self.dao = theaterDao()
         self.moviedao = mom.movieDao()
+        self.seatservice = sem.seatService()
+
     def movieselect(self):
         print('----------------영화를 선택해주세요----------------')
         movies = self.moviedao.selectAll()
@@ -88,6 +114,7 @@ class theaterService:
                 if movie.code == movie_code:
                     return movie_code
             print('영화코드를 잘못 입력 하셨습니다.')
+
     def addTheater(self):
         print('상영관 등록')
         name = input('상영관명:')
@@ -95,6 +122,7 @@ class theaterService:
         movie_code = self.movieselect()
         if movie_code != None:
             self.dao.insert(theaterVo(name=name, date=date, movie_code=movie_code))
+            self.seatservice.seatCreate()
             print('상영관 등록이 완료되었습니다')
         else:
             print('존해하지 않는 영화코드를 입력하였습니다')
@@ -109,7 +137,7 @@ class theaterService:
             print('등록된 상영관이 없습니다')
 
     def printList(self, theater_list):
-        if theater_list == None or len(theater_list)==0:
+        if theater_list == None or len(theater_list) == 0:
             print('검색한 상영관이 없습니다')
         else:
             for thr in theater_list:
@@ -140,6 +168,7 @@ class theaterService:
         new_date = input('수정할 날짜:')
         new_movie_code = self.movieselect()
         self.dao.update(new_date, new_movie_code, code)
+
     def delTheater(self):
         print('상영관 삭제')
         print('----------삭제할 상영관을 선택해주세요----------')

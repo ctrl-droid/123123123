@@ -1,6 +1,7 @@
 import movie_reserve.memModel as mem
 import movie_reserve.movieModel as movie
 import movie_reserve.theaterModel as theater
+import movie_reserve.reserveModel as reserve
 
 class Menu:
     def __init__(self):
@@ -8,21 +9,23 @@ class Menu:
         self.adminmemService = mem.adminmemService()
         self.movieService = movie.movieService()
         self.theaterService = theater.theaterService()
-
+        self.reserveService = reserve.reserveService()
 
     # 4.내정보 메뉴
     def meminfoMenu(self):
         while True:
-            m = input('1.예약정보확인 2.내정보확인 3.내정보수정 4.탈퇴 5.메뉴나감')
+            m = input('1.예약정보확인 2.예약취소 3.내정보확인 4.내정보수정 5.탈퇴 6.메뉴나감')
             if m == '1':
-                pass
+                self.reserveService.reserveinfo()
             elif m == '2':
-                self.memService.printMyInfo()
+                self.reserveService.reserveCancel()
             elif m == '3':
-                self.memService.editMyInfo()
+                self.memService.printMyInfo()
             elif m == '4':
-                self.memService.delMyInfo()
+                self.memService.editMyInfo()
             elif m == '5':
+                self.memService.delMyInfo()
+            elif m == '6':
                 break
 
     # 5.관리자 메뉴
@@ -94,7 +97,7 @@ class Menu:
         while True:
             m = input('1.영화예약 2.회원가입 3.로그인 4.로그아웃 5.내정보 6.관리자 7.종료')
             if m == '1':
-                print('영화 예약(과정) -> table 조인 과정 복잡 ★★★★★')
+                self.reserveService.moviereserve()
             elif m == '2':
                 self.memService.join()
             elif m == '3':
