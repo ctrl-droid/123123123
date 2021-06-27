@@ -91,7 +91,7 @@ class movieService:
         self.dao = movieDao()
 
     def addMovie(self):
-        print('새로운 영화 등록:')
+        print('새로운 영화 등록')
         name = input('영화명:')
         date = input('개봉일:')
         director = input('감독:')
@@ -142,12 +142,12 @@ class movieService:
                         flag = True
                         if flag == True:
                             new_date = input('수정할 개봉일을 입력하세요:')
-                    if code != None:
-                        self.dao.update(new_date, code)
-                        print('수정이 완료되었습니다')
-                        return
-                    else:
-                        print('영화 코드를 잘못 입력 하였습니다')
+                            if code != None:
+                                self.dao.update(new_date, code)
+                                print('수정이 완료되었습니다')
+                                return
+                            else:
+                                print('영화 코드를 잘못 입력 하였습니다')
             else:
                 print('검색한 영화가 없습니다')
 
