@@ -143,11 +143,15 @@ class memService:
 
     def editMyInfo(self):
         print('내 정보 수정')
-        if memService.login_id == None:
+        loginid = memService.login_id
+        if loginid == None:
             print('로그인 후 사용할 수 있습니다.')
             return
+        oridao = self.dao.select(loginid)
         new_pwd = input('수정할 비밀번호:')
         new_tel = input('수정할 연락처:')
+        if new_tel == '':
+            new_tel = oridao.tel
         self.dao.update(memService.login_id, new_pwd, new_tel)
 
     def delMyInfo(self):

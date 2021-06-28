@@ -166,7 +166,7 @@ class reserveService:
 
     def audienceselect(self, seats, seat_list):
         while True:
-            print(str(len(seat_list)+1) + '번째 좌석을 ', end='')
+            print(str(len(seat_list)+1) + '번째 좌석을', end='')
             name = input('선택:')
             select_code = None
             for seat in seats: # 좌석이름 선택 또는 예약된 좌석 선택시
@@ -203,8 +203,14 @@ class reserveService:
         for code in seat_list:
             seatvo = self.seatdao.select(code)
             totalprice += seatvo.price
+        # 포인트 처리
+        pointval = totalprice * 0.1
+        loginid = mem.memService.login_id
+
+        orimemvo =self.memdao.select(loginid)
+        self.memdao.ad_update(loginid, orimemvo.pwd, orimemvo.name, orimemvo.tel, pointval+orimemvo.point)
         print('------------------- 결제 진행 -------------------')
-        print('결제 하실 금액은 ' + str(totalprice) + '원 입니다. 결제 하시겠습니까?')
+        print('결제 하실 금액은' + str(totalprice) + '원 입니다. 결제 하시겠습니까?')
         while True:
             check = input('1.결제 2.예약취소: ')
             if check == '1':

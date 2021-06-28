@@ -59,15 +59,6 @@ class movieDao:
         finally:
             self.disconnect()
 
-    def searchcode(self, name):
-        self.connect()
-        cur = self.conn.cursor()
-        sql = "select code from movie where name = %s"
-        vals = (name,)
-        cur.execute(sql, vals)
-        self.conn.commit()
-        self.disconnect()
-
     def update(self, new_date, code):
         self.connect()
         cur = self.conn.cursor()
@@ -91,7 +82,7 @@ class movieService:
         self.dao = movieDao()
 
     def addMovie(self):
-        print('새로운 영화 등록')
+        print('새로운 영화 등록:')
         name = input('영화명:')
         date = input('개봉일:')
         director = input('감독:')
@@ -129,6 +120,7 @@ class movieService:
     def editMovie(self):    #name을 검색한 결과를 서비스에서 받아서 아까 바꾼 code로 받는 다오를 선택하게끔
         print('영화 정보 수정')
         while True:
+            flag = False
             name = input('수정할 영화명을 검색하세요:')
             movies = self.dao.select(name)
             for movie in movies:
@@ -137,8 +129,30 @@ class movieService:
                 code = int(input('수정할 영화 코드를 입력하세요:'))
                 flag = False
                 for movie in movies:
-                    if movie.code == code and :
+                    if movie.code == code:
                         flag = True
+                        if flag == True:
+                            new_date = input('수정할 개봉일을 입력하세요:')
+                    if code != None:
+                        self.dao.update(new_date, code)
+                        print('수정이 완료되었습니다')
+                        return
+                    else:
+                        print('영화 코드를 잘못 입력 하였습니다')
+            else:
+                print('검색한 영화가 없습니다')
+
+    def editMovie(self):  # name을 검색한 결과를 서비스에서 받아서 아까 바꾼 code로 받는 다오를 선택하게끔
+        print('영화 정보 수정')
+        while True:
+            name = input('수정할 영화명을 검색하세요:')
+            movies = self.dao.select(name)
+            for movie in movies:
+                print(movie)
+            if len(movies):
+                code = int(input('수정할 영화 코드를 입력하세요:'))
+                for movie in movies:
+                    if movie.code == code:
                         new_date = input('수정할 개봉일을 입력하세요:')
                         if code != None:
                             self.dao.update(new_date, code)
