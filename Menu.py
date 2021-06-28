@@ -2,6 +2,7 @@ import movie_reserve.memModel as mem
 import movie_reserve.movieModel as movie
 import movie_reserve.theaterModel as theater
 import movie_reserve.reserveModel as reserve
+import movie_reserve.AutoInsert as ai
 
 class Menu:
     def __init__(self):
@@ -10,6 +11,7 @@ class Menu:
         self.movieService = movie.movieService()
         self.theaterService = theater.theaterService()
         self.reserveService = reserve.reserveService()
+        self.AutoInsert = ai.AutoInsert()
 
     # 4.내정보 메뉴
     def meminfoMenu(self):
@@ -62,7 +64,7 @@ class Menu:
     # 5_2.영화관리 메뉴
     def admin_movieMenu(self):
         while True:
-            m = input('1.영화등록 2.영화전체조회 3.영화검색 4.영화수정 5.영화삭제 6.메뉴나감')
+            m = input('1.영화등록 2.영화전체조회 3.영화검색 4.영화수정 5.영화삭제 6.영화자동등록 7.메뉴나감')
             if m == '1':
                 self.movieService.addMovie()
             elif m == '2':
@@ -74,6 +76,8 @@ class Menu:
             elif m == '5':
                 self.movieService.delMovie()
             elif m == '6':
+                self.AutoInsert.movieCrawler()
+            elif m == '7':
                 break
 
     # 5_3.상영관관리 메뉴

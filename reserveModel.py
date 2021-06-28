@@ -26,6 +26,7 @@ class reserveInfoVo:
         self.theater_name = theater_name
         self.seat_name = seat_name
         self.member_id = member_id
+
     def __str__(self):
         return '예약코드:' + str(self.code) + ' / 영화이름:' + str(self.movie_name) + ' / 상영날짜:' + str(self.theater_Date)\
                + ' / 상영관이름:' + str(self.theater_name) + ' / 좌석이름:' + str(self.seat_name) + ' / 결제정보:' + self.payment
@@ -210,7 +211,7 @@ class reserveService:
         orimemvo =self.memdao.select(loginid)
         self.memdao.ad_update(loginid, orimemvo.pwd, orimemvo.name, orimemvo.tel, pointval+orimemvo.point)
         print('------------------- 결제 진행 -------------------')
-        print('결제 하실 금액은 ' + str(totalprice) + '원 입니다. 결제 하시겠습니까?')
+        print('결제 하실 금액은' + str(totalprice) + '원 입니다. 결제 하시겠습니까?')
         while True:
             check = input('1.결제 2.예약취소: ')
             if check == '1':
@@ -243,7 +244,7 @@ class reserveService:
         if loginid == None:
             print('로그인후 사용할수 있습니다.')
             return
-        print('--------', loginid, '님의 예약 목록 입니다 --------')
+        print('-------', loginid, '님의 예약 목록 입니다--------')
         reserve = self.reservedao.selectMember(loginid)
         for row in reserve:
             print(row)
@@ -274,6 +275,7 @@ class reserveService:
         seatpoint = seatvo.price * 0.1
         orimemvo = self.memdao.select(loginid)
         self.memdao.ad_update(loginid, orimemvo.pwd, orimemvo.name, orimemvo.tel, orimemvo.point - seatpoint)
+
         self.seatdao.availableupdate(seat_code=seat_code, available=False)
         self.reservedao.delete(reserve_code)
         print('예약 취소가 완료되었습니다.')
