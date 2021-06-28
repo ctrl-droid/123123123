@@ -167,7 +167,7 @@ class theaterService:
             print('상영관 코드를 잘못 입력 하였습니다.')
         new_date = input('수정할 날짜:')
         new_movie_code = self.movieselect()
-        self.dao.update(new_date, new_movie_code, code)
+        self.dao.update(code, new_date, new_movie_code)
 
     def delTheater(self):
         print('상영관 삭제')

@@ -82,7 +82,7 @@ class movieService:
         self.dao = movieDao()
 
     def addMovie(self):
-        print('새로운 영화 등록:')
+        print('새로운 영화 등록')
         name = input('영화명:')
         date = input('개봉일:')
         director = input('감독:')

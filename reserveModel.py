@@ -18,17 +18,17 @@ class reserveVo:
                + ' / 상영관코드:' + str(self.theater_code) + ' / 좌석코드:' + str(self.seat_code) + ' / 회원아이디:' + self.member_id
 
 class reserveInfoVo:
-    def __init__(self, code=None, payment=None, movie_name=None, theater_name=None, seat_name=None, member_id=None):
+    def __init__(self, code=None, payment=None, movie_name=None, theater_Date=None, theater_name=None, seat_name=None, member_id=None):
         self.code = code
         self.payment = payment
         self.movie_name = movie_name
+        self.theater_Date = theater_Date
         self.theater_name = theater_name
         self.seat_name = seat_name
         self.member_id = member_id
-
     def __str__(self):
-        return '예약코드:' + str(self.code) + ' / 영화이름:' + str(self.movie_name)+ ' / 상영관이름:' + str(self.theater_name) \
-               + ' / 좌석이름:' + str(self.seat_name) + ' / 결제정보:' + self.payment
+        return '예약코드:' + str(self.code) + ' / 영화이름:' + str(self.movie_name) + ' / 상영날짜:' + str(self.theater_Date)\
+               + ' / 상영관이름:' + str(self.theater_name) + ' / 좌석이름:' + str(self.seat_name) + ' / 결제정보:' + self.payment
 
 class reserveDao:
     def __init__(self):
@@ -67,7 +67,7 @@ class reserveDao:
         self.connect()
         cur = self.conn.cursor()
         sql = """
-            SELECT r.code, r.payment, m.name, t.name, s.name, r.member_id
+            SELECT r.code, r.payment, m.name, t.date, t.name, s.name, r.member_id
             FROM reserve r 
             JOIN movie m
             ON r.movie_code = m.code
@@ -79,7 +79,7 @@ class reserveDao:
         vals = (member_id,)
         cur.execute(sql, vals)
         for row in cur:
-            reserveinfos.append(reserveInfoVo(row[0], row[1], row[2], row[3], row[4], row[5]))
+            reserveinfos.append(reserveInfoVo(row[0], row[1], row[2], row[3], row[4], row[5], row[6]))
         self.disconnet()
         return reserveinfos
 
@@ -210,7 +210,7 @@ class reserveService:
         orimemvo =self.memdao.select(loginid)
         self.memdao.ad_update(loginid, orimemvo.pwd, orimemvo.name, orimemvo.tel, pointval+orimemvo.point)
         print('------------------- 결제 진행 -------------------')
-        print('결제 하실 금액은' + str(totalprice) + '원 입니다. 결제 하시겠습니까?')
+        print('결제 하실 금액은 ' + str(totalprice) + '원 입니다. 결제 하시겠습니까?')
         while True:
             check = input('1.결제 2.예약취소: ')
             if check == '1':
@@ -243,7 +243,7 @@ class reserveService:
         if loginid == None:
             print('로그인후 사용할수 있습니다.')
             return
-        print(loginid, '님의 예약 목록 입니다.')
+        print('--------', loginid, '님의 예약 목록 입니다 --------')
         reserve = self.reservedao.selectMember(loginid)
         for row in reserve:
             print(row)
@@ -267,6 +267,13 @@ class reserveService:
             return
         reserve_code = self.reserveselect(loginid)
         reserveVo = self.reservedao.select(reserve_code)
-        self.seatdao.availableupdate(seat_code=reserveVo.seat_code, available=False)
+        seat_code = reserveVo.seat_code
+
+        # 포인트 처리
+        seatvo = self.seatdao.select(seat_code)
+        seatpoint = seatvo.price * 0.1
+        orimemvo = self.memdao.select(loginid)
+        self.memdao.ad_update(loginid, orimemvo.pwd, orimemvo.name, orimemvo.tel, orimemvo.point - seatpoint)
+        self.seatdao.availableupdate(seat_code=seat_code, available=False)
         self.reservedao.delete(reserve_code)
         print('예약 취소가 완료되었습니다.')
