@@ -211,7 +211,7 @@ class reserveService:
         orimemvo =self.memdao.select(loginid)
         self.memdao.ad_update(loginid, orimemvo.pwd, orimemvo.name, orimemvo.tel, pointval+orimemvo.point)
         print('------------------- 결제 진행 -------------------')
-        print('결제 하실 금액은' + str(totalprice) + '원 입니다. 결제 하시겠습니까?')
+        print('결제 하실 금액은 ' + str(totalprice) + '원 입니다. 결제 하시겠습니까?')
         while True:
             check = input('1.결제 2.예약취소: ')
             if check == '1':
